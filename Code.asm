@@ -2,12 +2,35 @@
 .STACK 100H
 .DATA 
 QQQ db ">>> $"
-WELCOME DB "Welcome to Python Interpreter!$"
-NOTE DB 10,13,"There are limited features. You can do operations like print, input-output(integer & charecter) and basic arithmetic operations only. You can take only 5 inputs named a,b,c,d & e.$"
 
-DISP1 DB 10,13,"Write your python code (Press x for exit):$" 
-ERROR DB 10,13,"Syntax error! Press i to read the instructions.$"
+;INSTRUCTIONS
+DISP1 DB 10,13,"Write your python code (Press x for exit or h for help):$" 
+ERROR DB 10,13,"Syntax error! Press h for help.$"
+VER1 DB 10,13,"VERSION:$"
+VER2 DB 10,13, "python-iterpreter(alpha) v0.0$"
+VER3 DB 10,13,"(Build 20230923)$"
 
+ABT DB 10,13,"GitHub: https://github.com/shefat2002/Python-Interpreter$"
+
+
+;HELP INSTRUCTIONS 
+INSINTRO DB "<<<<<<<<PYTHON INTERPRETER>>>>>>>>$"
+INS1 DB 10,13,"There are limited features in the interpreter. You can do operations like print, input-output(integer & charecter) and basic arithmetic operations only. You can take only 5 inputs named a,b,c,d & e.$"
+INS5 DB 10,13,"Basic commands:$"
+INS2 DB 10,13,"X       EXIT$"
+INS3 DB 10,13,"h       help$"
+INS4 DB 10,13,"q       clear screen$"
+INS6 DB 10,13,"v       version$"
+INS7 DB 10,13,"s       show variables current valeus$" 
+
+GUD1 DB 10,13,"print instructions:$" 
+GUD2 DB 10,13,"To print a string type print($"
+GUD21 DB 34,"<the string>$"
+GUD22 DB 34,")$"
+GUD3 DB 10,13,"To print a variable's valye type print(<variable name>)$"
+
+
+;VARIABLES
 STRING DB 60 DUP(?)
 A DB '0'
 B DB '0'
@@ -22,6 +45,14 @@ EQ DB '0'
 
 VAR DB ?
 
+SV DB 10,13,"Variables:$"
+SA DB 10,13,"A = $" 
+SB DB 10,13,"B = $" 
+SC DB 10,13,"C = $" 
+SD DB 10,13,"D = $" 
+SE DB 10,13,"E = $" 
+
+
 
 .CODE
 MAIN PROC
@@ -29,12 +60,9 @@ MAIN PROC
     MOV DS, AX 
     
     MOV AH,9
-    LEA DX, WELCOME
+    LEA DX, INSINTRO
     INT 21H
     
-    MOV AH,9
-    LEA DX, NOTE
-    INT 21H
     
     ;NEW LINE
     MOV DL,13
@@ -68,10 +96,23 @@ MAIN PROC
     MOV AH,1
     INT 21H
     
-    CMP AL, 'x'       ;CHECK EXIT COMMAND
+    ;CHECK COMMAND
+    CMP AL, 'x'         ;CHECK EXIT COMMAND
     JE EXIT
     
-    CMP AL, 'p'       ;CHECK PRINT FUNCTION
+    CMP AL, 'h'         ;HELP
+    JE HELP
+    
+    CMP AL, 'v'         ;VERSION
+    JE VERSION
+    
+    CMP AL, 'q'         ;CLEAR SCREEN
+    JE CLEAR_SCREEN
+    
+    CMP AL, 's'         ;SHOW VARIABLES
+    JE VARIABLES
+    
+    CMP AL, 'p'         ;CHECK PRINT FUNCTION
     JNE ARITHMETIC
      
      
@@ -196,13 +237,20 @@ MAIN PROC
     JMP SYNTAX_ERROR        ;SYNTAX ERROR MESSAGE
     
     
-    
+        
+        
+        
+        
+        
+        
+        
+        
     
     ;WORK WITH VARIABLE A
     LA:
     INC DI
     
-    CMP [DI],'$'             ;CHECK RETURN
+    CMP [DI],'$'            ;CHECK RETURN
     JE END              
     MOV BL, [DI]
     CMP BL, '='             ;CHECK FOR EQUAL SIGN
@@ -322,7 +370,11 @@ MAIN PROC
     
     
     
-    
+          
+          
+          
+          
+          
     
     
     
@@ -445,7 +497,13 @@ MAIN PROC
     JMP SYNTAX_ERROR        ;SYNTAX ERROR MESSAGE
     
     
-      
+               
+               
+               
+               
+               
+               
+               
     
     ;WORK WITH VARIABLE C
     LC:
@@ -564,7 +622,12 @@ MAIN PROC
     CMP [DI],'$'            ;CHECK RETURN
     JE END
     JMP SYNTAX_ERROR        ;SYNTAX ERROR MESSAGE
-    
+      
+      
+      
+      
+      
+      
                            
                            
     
@@ -687,12 +750,12 @@ MAIN PROC
     JMP SYNTAX_ERROR        ;SYNTAX ERROR MESSAGE
     
     
-    
-    
-    
-    
-    
-    
+                
+                
+                
+                
+                
+                
     
     
     ;WORK WITH VARIABLE E
@@ -818,18 +881,6 @@ MAIN PROC
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     ;PRINT VARIABLE
     DISPLAY2:
     CMP AL, 'a'
@@ -876,7 +927,7 @@ MAIN PROC
     MOV AH,1
     INT 21H
                
-    CMP AL,13       ;CHECK CARRAGE RETURN
+    CMP AL,13               ;CHECK RETURN
     JNE REST
     
     ;NEW LINE
@@ -888,18 +939,229 @@ MAIN PROC
     INT 21H
     
     MOV DL,CL
-    MOV AH,2        ;PRINT THE VALUE
+    MOV AH,2                ;PRINT THE VALUE
     INT 21H
     
     JMP END
     
+    
+    
+    ;ENDING PART
+    
+    
+    
+    ;HELP
+    
+    HELP:
+    
+    ;CLEAR SCREEN
+    MOV AH,06               ;CLEAR SCREEN INSTRUCTION
+    MOV AL,00               ;NUMBER OF LINES TO SCROLL
+    MOV BH,07               ;DISPLAY ATTRIBUTE - COLORS
+    MOV CH,00               ;START ROW
+    MOV CL,00               ;START COL
+    MOV DH,24               ;END OF ROW
+    MOV DL,79               ;END OF COLUMN
+    INT 10H                 ;BIOS INTERRUPT
+    
+    ;RESET CURSOR           
+    MOV AH, 2               ;CURSOR INSTRUCTION
+    MOV BH, 0               ;PAGE 0
+    MOV DH, 0               ;ROW
+    MOV DL, 0               ;COLUMN
+    INT 10H                 ;BIOS INTERRUPT
+    
+    
+    MOV AH,9
+    LEA DX, INS1            ;BASIC INSTRUCTION
+    INT 21H
+    
+    ;NEW LINE
+    MOV AH,2
+    MOV DL,10
+    INT 21H
+    MOV DL,13
+    INT 21H
+    
+    
+    MOV AH,9
+    LEA DX, INS5            ;BASIC COMMANDS
+    INT 21H
+    
+    MOV AH,9
+    LEA DX, INS3            ;HELP
+    INT 21H
+    
+    MOV AH,9                ;EXIT
+    LEA DX, INS2
+    INT 21H
+    
+    MOV AH,9                ;CLEAR SCREEN
+    LEA DX, INS4
+    INT 21H
+    
+    MOV AH,9                ;VERSION
+    LEA DX, INS6
+    INT 21H
+    
+    MOV AH,9                ;VARIABLES
+    LEA DX, INS7
+    INT 21H
+    
+    ;NEW LINE
+    MOV AH,2
+    MOV DL,10
+    INT 21H
+    MOV DL,13
+    INT 21H
+    
+    
+    ;GUIDLINE
+    MOV AH,9                
+    LEA DX, GUD1
+    INT 21H
+    
+    MOV AH,9                
+    LEA DX, GUD2
+    INT 21H
+    
+    MOV AH,9                
+    LEA DX, GUD21
+    INT 21H
+    
+    MOV AH,9                
+    LEA DX, GUD22
+    INT 21H
+    
+    MOV AH,9                
+    LEA DX, GUD3
+    INT 21H
+    
+    
+    JMP END
+    
+     
+     
+    ;VERSION CHECK 
+    VERSION:
+    
+    
+    MOV AH,9
+    LEA DX, VER1
+    INT 21H
+    
+    MOV AH,9
+    LEA DX, VER2
+    INT 21H
+    
+    MOV AH,9
+    LEA DX, VER3
+    INT 21H
+    
+    MOV AH,9
+    LEA DX, ABT
+    INT 21H
+    
+    JMP END 
+    
+    
+    ;SHOW ALL VARIABLES VALUE
+    VARIABLES:
+    
+    ;NEW LINE
+    MOV AH,2
+    MOV DL,10
+    INT 21H
+    MOV DL,13
+    INT 21H
+    
+    
+    MOV AH,9               ;VARIABLES
+    LEA DX, SV
+    INT 21H
+    
+    ;PRINT A
+    MOV AH,9
+    LEA DX, SA
+    INT 21H
+    
+    MOV AH,2
+    MOV DL, A
+    INT 21H
+    
+    ;PRINT B
+    MOV AH,9
+    LEA DX, SB
+    INT 21H
+    
+    MOV AH,2
+    MOV DL, B
+    INT 21H
+    
+    ;PRINT C
+    MOV AH,9
+    LEA DX, SC
+    INT 21H
+    
+    MOV AH,2
+    MOV DL, C
+    INT 21H
+    
+    ;PRINT D
+    MOV AH,9
+    LEA DX, SD
+    INT 21H
+    
+    MOV AH,2
+    MOV DL, D
+    INT 21H
+    
+    ;PRINT E
+    MOV AH,9
+    LEA DX, SE
+    INT 21H
+    
+    MOV AH,2
+    MOV DL, E
+    INT 21H
+    
+    JMP END
+    
+    
+    
+    
+    ;SHOW SYNTAX ERROR MESSAGE
     SYNTAX_ERROR:
     MOV AH,2
-    MOV DL,7
+    MOV DL,7                ;BEEP SOUND
     INT 21H
-    MOV AH,9        ;SYNTAX ERROR MESSAGE
+    MOV AH,9                ;SYNTAX ERROR MESSAGE
     LEA DX, ERROR
     INT 21H
+    JMP END
+     
+    ;CLEAR THE WHOLE SCREEN
+    CLEAR_SCREEN:
+    MOV AH,06               ;CLEAR SCREEN INSTRUCTION
+    MOV AL,00               ;NUMBER OF LINES TO SCROLL
+    MOV BH,07               ;DISPLAY ATTRIBUTE - COLORS
+    MOV CH,00               ;START ROW
+    MOV CL,00               ;START COL
+    MOV DH,24               ;END OF ROW
+    MOV DL,79               ;END OF COLUMN
+    INT 10H                 ;BIOS INTERRUPT
+    
+    ;RESET CURSOR           
+    MOV AH, 2               ;CURSOR INSTRUCTION
+    MOV BH, 0               ;PAGE 0
+    MOV DH, 0               ;ROW
+    MOV DL, 0               ;COLUMN
+    INT 10H                 ;BIOS INTERRUPT
+    
+    
+    
+    JMP END
+    
     
     END:
     

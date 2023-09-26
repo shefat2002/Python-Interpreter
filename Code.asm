@@ -14,7 +14,8 @@ ABT DB 10,13,"GitHub: https://github.com/shefat2002/Python-Interpreter$"
 
 
 ;HELP INSTRUCTIONS 
-INSINTRO DB "<<<<<<<<PYTHON INTERPRETER>>>>>>>>$"
+INSINTRO DB "<<<<<<<<<<<PYTHON INTERPRETER>>>>>>>>>>>$"
+HLPINTRO DB "<<<<<<<<<<<<<<<<<<HELP>>>>>>>>>>>>>>>>>>$"
 INS1 DB 10,13,"There are limited features in the interpreter. You can do operations like print, input-output(integer & charecter) and basic arithmetic operations only. You can take only 5 inputs named a,b,c,d & e.$"
 INS5 DB 10,13,"Basic commands:$"
 INS2 DB 10,13,"X       EXIT$"
@@ -23,11 +24,11 @@ INS4 DB 10,13,"q       clear screen$"
 INS6 DB 10,13,"v       version$"
 INS7 DB 10,13,"s       show variables current valeus$" 
 
-GUD1 DB 10,13,"print instructions:$" 
-GUD2 DB 10,13,"To print a string type print($"
+GUD1 DB 10,13,"Print Instructions:$" 
+GUD2 DB 10,13,">To print a string type print($"
 GUD21 DB 34,"<the string>$"
 GUD22 DB 34,")$"
-GUD3 DB 10,13,"To print a variable's valye type print(<variable name>)$"
+GUD3 DB 10,13,">To print a variable's valye type print(<variable name>)$"
 
 
 ;VARIABLES
@@ -972,6 +973,18 @@ MAIN PROC
     INT 10H                 ;BIOS INTERRUPT
     
     
+    
+    MOV AH,9
+    LEA DX, HLPINTRO         
+    INT 21H 
+    
+     ;NEW LINE
+    MOV AH,2
+    MOV DL,10
+    INT 21H
+    MOV DL,13
+    INT 21H
+    
     MOV AH,9
     LEA DX, INS1            ;BASIC INSTRUCTION
     INT 21H
@@ -1038,6 +1051,14 @@ MAIN PROC
     INT 21H
     
     
+    ;NEW LINE
+    MOV AH,2
+    MOV DL,10
+    INT 21H
+    MOV DL,13
+    INT 21H
+    
+    
     JMP END
     
      
@@ -1060,6 +1081,14 @@ MAIN PROC
     
     MOV AH,9
     LEA DX, ABT
+    INT 21H
+    
+    
+    ;NEW LINE
+    MOV AH,2
+    MOV DL,10
+    INT 21H
+    MOV DL,13
     INT 21H
     
     JMP END 
@@ -1125,6 +1154,13 @@ MAIN PROC
     MOV DL, E
     INT 21H
     
+    ;NEW LINE
+    MOV AH,2
+    MOV DL,10
+    INT 21H
+    MOV DL,13
+    INT 21H
+    
     JMP END
     
     
@@ -1138,6 +1174,14 @@ MAIN PROC
     MOV AH,9                ;SYNTAX ERROR MESSAGE
     LEA DX, ERROR
     INT 21H
+    
+    ;NEW LINE
+    MOV AH,2
+    MOV DL,10
+    INT 21H
+    MOV DL,13
+    INT 21H
+    
     JMP END
      
     ;CLEAR THE WHOLE SCREEN
